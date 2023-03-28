@@ -1,11 +1,13 @@
 import { Component } from "react";
+import './About.css';
 
-class Profile extends Component {
+class About extends Component {
 
   render() {
     /* TODO: render information about the developers */
-    return <p>Profile page coming soon</p>
+    return <p>💻Developer Information: Steven Vinzen, Darshon Crudup</p>
+    
   }
 };
 
-export default Profile;
+export default About;
