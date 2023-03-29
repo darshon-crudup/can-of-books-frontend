@@ -5,7 +5,7 @@ class About extends Component {
 
   render() {
     /* TODO: render information about the developers */
-    return <p>💻Developer Information: Steven Vinzen, Darshon Crudup</p>
+    return <p>💻Developer Information: Laurence Vinzen, Darshon Crudup</p>
     
   }
 };
