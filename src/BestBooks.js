@@ -5,16 +5,18 @@ import Carousel from "react-bootstrap/Carousel";
 import './BestBooks.css';
 import { Button, } from 'react-bootstrap';
 import BookFormModal from './BookFormModal';
-
+import UpdateBookForm from './UpdateBookForm'
 
 
 class BestBooks extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      bookToUpdate: null,
       books: [],
       errorMessage: '',
-      showModal: false
+      showModal: false,
+      showForm: false
     }
   }
   //   mar28 updates
@@ -27,7 +29,12 @@ class BestBooks extends React.Component {
     })
   }
 
-
+  handleShowForm = (book) => {
+    this.setState({
+      showForm: true,
+      bookToUpdate: book
+    })
+  }
 
   //HANDLER #1 - COMES FROM FORM - BUILD A BOOK OBJECT
   handleBookSubmit = (event) => {
@@ -63,7 +70,29 @@ class BestBooks extends React.Component {
     }
   }
 
+  // UPDATE 23mar29 Lab13
+  handleBookUpdate = async (bookObj) => {
+    try {
 
+      let url = `${process.env.REACT_APP_SERVER}/books/${bookObj._id}`
+
+      // **** On a post, we pass in 2 args to axios, 1st is the url, 2nd is the data that will go on the request.body
+      let updateBook = await axios.put(url, bookObj)
+
+    let updatedBookArray = this.state.books.map(existingBook => {
+      return existingBook._id === bookObj._id
+      ? updateBook.data
+      : existingBook
+    })
+
+      this.setState({
+        books: updatedBookArray
+      })
+
+    } catch (error) {
+      console.log(error.message)
+    }
+  }
 
   // **** REACT LIFECYCLE METHOD
   componentDidMount = async () => {
@@ -129,6 +158,8 @@ class BestBooks extends React.Component {
 
         {this.state.books.length ? (
           <Container>
+
+
             <Carousel>
               {this.state.books.map((book, idx) => (
                 <Carousel.Item key={idx}>
@@ -139,50 +170,70 @@ class BestBooks extends React.Component {
                   />
                   <Carousel.Caption>
                     <h3 style={{ backgroundColor: 'teal', borderRadius: '5px', width: 'max-content', margin: 'auto', padding: '5px' }}> {book.title}</h3>
-                    <Button onClick={() => { this.deleteBook(book._id) }}>Delete Book</Button>
+                    <Book
+                      bookToPassDown={book}
+                      handleShowForm={() => this.handleShowForm(book)}
+                      deleteBook={this.deleteBook}
+                    />
                   </Carousel.Caption>
                 </Carousel.Item>
               ))}
 
             </Carousel>
 
-            {/* <Container className="formAdd">
-              <Form onSubmit={this.handleBookSubmit}>
-                <Form.Group controlId="title">
-                  <Form.Label>Title</Form.Label>
-                  <Form.Control type="text" />
-                </Form.Group>
-                <Form.Group controlId="description">
-                  <Form.Label>Description</Form.Label>
-                  <Form.Control type="text" />
-                </Form.Group>
-                <Form.Group controlId="status">
-                  <Form.Check type="checkbox" label="Status" />
-                </Form.Group>
-                <Form.Group controlId="url">
-                  <Form.Check type="checkbox" label="url" />
-                </Form.Group>
-                <Button type="submit">Add Book</Button>
-              
-              </Form>
-            </Container> */}
+            {this.state.showModal ? <BookFormModal handleBookSubmit={this.handleBookSubmit} /> : <button onClick={this.handleShowModal} >Add Book</button>}
 
-            {this.state.showModal ? <BookFormModal handleBookSubmit={this.handleBookSubmit} /> : <button onClick= { this.handleShowModal } >Add Book</button>}
-
-      </Container>
-    ) : (
-      <h3>No Books Found :</h3>
-    )
-  }
+            {this.state.showForm &&
+              <UpdateBookForm
+                book={this.state.bookToUpdate}
+              updateBook={this.handleBookUpdate}
+              />
+            }
+          </Container>
+        ) : (
+          <h3>No Books Found :</h3>
+        )
+        }
       </>
+
+
+
+
+
     )
   }
 }
+
+class Book extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showForm: false
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        <div>
+          {this.props.bookToPassDown.title} is {this.props.bookToPassDown.description} book
+          <Button onClick={() => { this.props.deleteBook(this.props.bookToPassDown._id) }}>Delete</Button>
+          <Button onClick={this.props.handleShowForm}>Open Update Form</Button>
+        </div>
+
+
+      </div>
+    )
+  }
+};
+
+
+
 
 export default BestBooks;
 
 
 // saw url schema in backend seed.js 
-// clear.js, changed cats to books
+// clear.js, changed books to books
 
 
