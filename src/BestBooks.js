@@ -198,9 +198,8 @@ class BestBooks extends React.Component {
               book={this.state.bookToUpdate}
               updateBook={this.handleBookUpdate}
               />
-              
-              
             }
+            
             <button onClick={this.handleHideModal} > Close Form</button>
             
           </Container>
