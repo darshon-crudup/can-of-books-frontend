@@ -29,6 +29,15 @@ class BestBooks extends React.Component {
     })
   }
 
+
+  handleHideModal= () => {
+    this.setState({
+      showModal: false
+    })
+  }
+
+
+
   handleShowForm = (book) => {
     this.setState({
       showForm: true,
@@ -181,18 +190,22 @@ class BestBooks extends React.Component {
 
             </Carousel>
 
-            {this.state.showModal ? <BookFormModal handleBookSubmit={this.handleBookSubmit} /> : <button onClick={this.handleShowModal} >Add Book</button>}
+            {this.state.showModal ? <BookFormModal handleBookSubmit={this.handleBookSubmit} />: <button onClick={this.handleShowModal} >Add Book Form</button> }
 
             {this.state.showForm &&
               <UpdateBookForm
-                book={this.state.bookToUpdate}
+              book={this.state.bookToUpdate}
               updateBook={this.handleBookUpdate}
               />
+              
+              
             }
+            <button onClick={this.handleHideModal} > Close Form</button>
+            
           </Container>
         ) : (
           <h3>No Books Found :</h3>
-        )
+          )
         }
       </>
 
