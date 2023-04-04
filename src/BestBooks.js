@@ -32,7 +32,8 @@ class BestBooks extends React.Component {
 
   handleHideModal= () => {
     this.setState({
-      showModal: false
+      showModal: false,
+      showForm: false
     })
   }
 
